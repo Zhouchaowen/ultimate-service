@@ -3,9 +3,10 @@ SHELL := /bin/bash
 run:
 	go run main.go
 
+clear-image:
+    docker image prune
 # ==============================================================================
 # Building containers
-
 VERSION := 1.0
 
 all: service
@@ -37,7 +38,7 @@ kind-load:
 	kind load docker-image service-amd64:$(VERSION) --name $(KIND_CLUSTER)
 
 kind-apply:
-	cat zarf/k8s/base/service-pod | kubectl apply -f -
+	cat zarf/k8s/base/service-pod/base-service.yaml | kubectl apply -f -
 
 kind-status:
 	kubectl get nodes -o wide
