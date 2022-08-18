@@ -1,11 +1,12 @@
 FROM golang:1.18 as build_sales-api
 ENV CGO_ENABLED 0
+ENV GOPROXY https://goproxy.cn,direct
 ARG BUILD_REF
 
 COPY . /service
 
 WORKDIR /service
-RUN go build -ldflags "-X main.build=${BUILD_REF}"
+RUN go mod tidy && go build -ldflags "-X main.build=${BUILD_REF}"
 
 
 FROM alpine:3.16

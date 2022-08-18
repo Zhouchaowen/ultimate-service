@@ -4,7 +4,7 @@ run:
 	go run main.go
 
 clear-image:
-    docker image prune
+	docker image prune
 
 # ==============================================================================
 # Building containers
