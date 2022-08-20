@@ -2,9 +2,14 @@
 package handlers
 
 import (
+	"encoding/json"
 	"expvar"
+	"go.uber.org/zap"
 	"net/http"
 	"net/http/pprof"
+	"os"
+
+	"github.com/dimfeld/httptreemux/v5"
 )
 
 // DebugStandardLibraryMux registers all the debug routes from the standard library
@@ -22,5 +27,26 @@ func DebugStandardLibraryMux() *http.ServeMux {
 	mux.HandleFunc("/debug/pprof/trace", pprof.Trace)
 	mux.Handle("/debug/vars", expvar.Handler())
 
+	return mux
+}
+
+// APIMuxConfig contains all the mandatory systems required by handlers.
+type APIMuxConfig struct {
+	Shutdown chan os.Signal
+	Log      *zap.SugaredLogger
+}
+
+// APIMux constructs a http.Handler with all application routes defined.
+func APIMux(cfg APIMuxConfig) *httptreemux.ContextMux {
+	mux := httptreemux.NewContextMux()
+	h := func(w http.ResponseWriter, r *http.Request) {
+		status := struct {
+			Status string
+		}{
+			Status: "OK",
+		}
+		json.NewEncoder(w).Encode(status)
+	}
+	mux.Handle(http.MethodGet, "/test", h)
 	return mux
 }
