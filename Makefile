@@ -9,10 +9,19 @@ SHELL := /bin/bash
 # install hey: wget https://hey-release.s3.us-east-2.amazonaws.com/hey_linux_amd64 && chmod +x hey_linux_amd64 && mv hey_linux_amd64 /usr/local/bin/hey
 # hey -m GET -c 100 -n 10000 http://localhost:3000/v1/test
 
+# To generate a private/public key PEM file.
+# openssl genpkey -algorithm RSA -out private.pem -pkeyopt rsa_keygen_bits:2048
+# openssl rsa -pubout -in private.pem -out public.pem
+# ./sales-admin genkey
+
+
 # ==============================================================================
 
 run:
 	go run app/services/sales-api/main.go | go run app/tooling/logfmt/main.go
+
+admin:
+    go run app/tooling/sales-admin/main.go
 
 clear-image:
 	docker image prune
