@@ -6,6 +6,8 @@ SHELL := /bin/bash
 # install expvarmon: go get github.com/divan/expvarmon
 # expvarmon -ports=":4000" -vars="build,requests,goroutines,errors,panics,mem:memstats.Alloc"
 
+# install hey: wget https://hey-release.s3.us-east-2.amazonaws.com/hey_linux_amd64 && chmod +x hey_linux_amd64 && mv hey_linux_amd64 /usr/local/bin/hey
+# hey -m GET -c 100 -n 10000 http://localhost:3000/v1/test
 
 # ==============================================================================
 
