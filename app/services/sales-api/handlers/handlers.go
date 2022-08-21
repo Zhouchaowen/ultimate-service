@@ -5,12 +5,12 @@ import (
 	"expvar"
 	"github.com/Zhouchaowen/ultimate-service/app/services/sales-api/handlers/debug/checkgrp"
 	"github.com/Zhouchaowen/ultimate-service/app/services/sales-api/handlers/v1/testgrp"
+	"github.com/Zhouchaowen/ultimate-service/bussiness/web/mid"
+	"github.com/Zhouchaowen/ultimate-service/foundation/web"
 	"go.uber.org/zap"
 	"net/http"
 	"net/http/pprof"
 	"os"
-
-	"github.com/dimfeld/httptreemux/v5"
 )
 
 // DebugStandardLibraryMux registers all the debug routes from the standard library
@@ -56,11 +56,21 @@ type APIMuxConfig struct {
 }
 
 // APIMux constructs a http.Handler with all application routes defined.
-func APIMux(cfg APIMuxConfig) *httptreemux.ContextMux {
-	mux := httptreemux.NewContextMux()
+func APIMux(cfg APIMuxConfig) *web.App {
+	// Construct the web.App which holds all routes as well as common Middleware.
+	app := web.NewApp(cfg.Shutdown, mid.Logger(cfg.Log))
+
+	v1(app, cfg)
+
+	return app
+}
+
+func v1(app *web.App, cfg APIMuxConfig) {
+	const version = "v1"
+
 	tgh := testgrp.Handlers{
 		Log: cfg.Log,
 	}
-	mux.Handle(http.MethodGet, "/v1/test", tgh.Test)
-	return mux
+
+	app.Handle(http.MethodGet, version, "/test", tgh.Test)
 }
