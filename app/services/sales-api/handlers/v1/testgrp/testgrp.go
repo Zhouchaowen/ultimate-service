@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/Zhouchaowen/ultimate-service/foundation/web"
 	"go.uber.org/zap"
+	"math/rand"
 	"net/http"
 )
 
@@ -14,6 +15,13 @@ type Handlers struct {
 
 // Test handler is for development
 func (h Handlers) Test(ctx context.Context, w http.ResponseWriter, r *http.Request) error {
+	// test error middleware
+	if n := rand.Intn(100); n%2 == 0 {
+		//return errors.New("untrusted error")
+		//return validate.NewRequestError(errors.New("trusted error"),http.StatusBadRequest)
+		return web.NewShutdownError("restart service")
+	}
+
 	data := struct {
 		Status string `json:"status"`
 	}{
