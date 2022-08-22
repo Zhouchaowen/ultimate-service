@@ -14,6 +14,13 @@ SHELL := /bin/bash
 # openssl rsa -pubout -in private.pem -out public.pem
 # ./sales-admin genkey
 
+# Testing Authorization
+# curl http://localhost:3000/v1/testauth
+#
+# Get TOKEN: make admin
+# export TOKEN="COPY TOKEN STRING FROM LAST CALL"
+# curl -H "Authorization: Bearer ${TOKEN}" http://localhost:3000/v1/testauth
+
 
 # ==============================================================================
 
@@ -21,7 +28,7 @@ run:
 	go run app/services/sales-api/main.go | go run app/tooling/logfmt/main.go
 
 admin:
-    go run app/tooling/sales-admin/main.go
+	go run app/tooling/sales-admin/main.go
 
 clear-image:
 	docker image prune
